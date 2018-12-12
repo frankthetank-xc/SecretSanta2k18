@@ -1,3 +1,10 @@
+/* samples.h
+ * 
+ * PCM sample arrays for use in the PCM library
+ *
+ * These aren't formatted well. They could probably
+ *   be scripted into shape if I took some effort... */
+
 const char unsigned PROGMEM david[]={
 126, 126, 125, 125, 125, 124, 124, 124, 124, 124, 
 124, 124, 125, 126, 126, 126, 127, 127, 127, 128, 

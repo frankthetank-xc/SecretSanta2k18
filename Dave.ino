@@ -1,3 +1,7 @@
+/* Dave.ino
+ * 
+ * Arduino Nano project to annoy Dave */
+
 #include <PCM.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -6,7 +10,9 @@
 #include <avr/pgmspace.h>
 #include "samples.h"
 
-#define LED_MS 200
+#define LED_PIN (2)
+
+#define LED_MS (200)
 uint16_t light_counter;
 uint8_t light_state;
 
@@ -15,7 +21,7 @@ SIGNAL(TIMER0_COMPA_vect)
 {
   if(++light_counter >= LED_MS)
   {
-    digitalWrite(2, (light_state)?LOW:HIGH);
+    digitalWrite(LED_PIN, (light_state)?LOW:HIGH);
     light_state = !light_state;
     light_counter = 0;
   }
@@ -24,8 +30,9 @@ SIGNAL(TIMER0_COMPA_vect)
 void setup() {
   // put your setup code here, to run once:
   srand(analogRead(0));
-  pinMode(2, OUTPUT);
-  digitalWrite(2, LOW);           // Start with LED on
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);     // Start with LED on
+
   digitalWrite(LED_BUILTIN, LOW); // Turn off builtin LED to save some powah
 
   // Setup Timer 0 to count for the LED
@@ -39,11 +46,13 @@ void setup() {
 }
 
 void loop() {
-  int i = rand() % 20;
+  uint8_t i = rand() % 20;
   // put your main code here, to run repeatedly:
   char * sample;
-  unsigned int len;
-  unsigned int delay_len;
+  uint16_t len;
+  uint16_t delay_len;
+
+  // Chance of each sample is pretty much arbitrary...
   if(i < 5)
   {
     sample = &davidHelp[0];
@@ -60,7 +69,11 @@ void loop() {
     len = sizeof(david);
   }
   startPlayback(sample, len);
+
   // Sample rate is 8000Hz -> 8 samples/ms
   delay_len = (len / 8);
   delay(delay_len);
+
+  // Don't bother calling stopPlayback, startPlayback
+  // doesn't rely on registers being re-initialized
 }
