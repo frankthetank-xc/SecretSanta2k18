@@ -8,6 +8,7 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <avr/pgmspace.h>
+#include <EEPROM.h>
 #include "samples.h"
 
 #define LED_PIN (2)
@@ -16,7 +17,7 @@
 uint16_t light_counter;
 uint8_t light_state;
 
-
+// ISR for Timer0 comp
 SIGNAL(TIMER0_COMPA_vect)
 {
   if(++light_counter >= LED_MS)
@@ -28,8 +29,10 @@ SIGNAL(TIMER0_COMPA_vect)
 }
 
 void setup() {
-  // put your setup code here, to run once:
-  srand(analogRead(0));
+  // Get a unique seed each time
+  uint8_t seed = EEPROM.read(0);
+  EEPROM.write(0, seed + 1);
+  srand(seed);
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);     // Start with LED on
 
@@ -47,7 +50,6 @@ void setup() {
 
 void loop() {
   uint8_t i = rand() % 20;
-  // put your main code here, to run repeatedly:
   char * sample;
   uint16_t len;
   uint16_t delay_len;
@@ -65,7 +67,7 @@ void loop() {
   }
   else
   {
-    sample = &please[0];
+    sample = &david[0];
     len = sizeof(david);
   }
   startPlayback(sample, len);
